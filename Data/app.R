@@ -131,7 +131,7 @@ server <- function(input,output){
 
   
   output$tabel <- renderDataTable(
-    data(), options = list(pageLength = 10)
+    x(), options = list(pageLength = 10)
   )
   
   output$downloadData <- downloadHandler(
