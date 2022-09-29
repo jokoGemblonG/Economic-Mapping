@@ -89,17 +89,17 @@ server <- function(input,output){
     req(data())
     if(input$data == "Pengangguran"){
       a <- data()
-      colnames(a) <- c("Provinsi", "Tingkat P")
+      colnames(a) <- c("Provinsi", "Tingkat Pengangguran")
       return(a)
   }
     else if(input$data == "jumlah"){
       b <- data()
-      colnames(b) <- c("Provinsi", "kepadatan p")
+      colnames(b) <- c("Provinsi", "kepadatan Penduduk")
       return(b)
     }
     else if(input$data == "kepadatan"){
       c <- data()
-      colnames(c) <- c("Provinsi", "kepadatan p")
+      colnames(c) <- c("Provinsi", "Kepadatan Penduduk")
       
     } 
     
