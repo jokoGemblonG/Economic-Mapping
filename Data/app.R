@@ -5,9 +5,7 @@ ui <- fluidPage(
   titlePanel("Economic Dashboard"),
   
   sidebarLayout(
-    sidebarPanel(),
-    mainPanel(
-      selectInput(inputId = "data",
+    sidebarPanel(selectInput(inputId = "data",
                   label = "Pilih Data set",
                   choices = c("Data Jumlah Penduduk"= "jumlah",
                               "Data Kepadatan Penduduk"= "kepadatan",
@@ -52,8 +50,10 @@ ui <- fluidPage(
                               "Papua" = "PA",
                               "Papua Barat" = "PB"
                               )
-                  ),
-      
+                  )
+      ),
+    mainPanel(
+      plotOutput("Map"),
       dataTableOutput("tabel")
     )
   ) 
