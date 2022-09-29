@@ -1,63 +1,82 @@
 library(shiny)
+library(shinydashboard)
+#-----------------HEADER-------------------------------
+header <- dashboardHeader(title = "Economic-Dashboard")  
 
-ui <- fluidPage(
-  responsive = T,
-  titlePanel("Economic Dashboard"),
-  
-  sidebarLayout(
-    sidebarPanel(selectInput(inputId = "data",
-                  label = "Pilih Data set",
-                  choices = c("Data Jumlah Penduduk"= "jumlah",
-                              "Data Kepadatan Penduduk"= "kepadatan",
-                              "Data Persentase Kemiskinan" = "kemiskinan",
-                              "Data Tingkat Pengangguran"= "pengangguran"),
-                  selected = "jumlah"
-                  ),
-      selectInput(inputId = "provinsi",
-                  label = "Pilih Provinsi",
-                  choices = c("Aceh" = "AC",
-                              "Sumatra Utara"= "SU",
-                              "Sumatra Barat" = "SB",
-                              "Riau" = "RI",
-                              "Kepulauan Riau"= "KR",
-                              "Jambi" = "JA",
-                              "Sumatra Selatan" = "SS",
-                              "Bengkulu" = "BE",
-                              "Lampung" = "LA",
-                              "Bangka Belitung" = "BB",
-                              "Jakarta"= "JK",
-                              "Jawa Barat" = "JB",
-                              "Banten" = "BT",
-                              "Jawa Tengah" = "JT",
-                              "Yogyakarta" = "YO",
-                              "Jawa Timur" = "JI",
-                              "Bali" = "BA",
-                              "Nusa Tenggara Barat" = "NB",
-                              "Nusa Tenggara Timur" = "NT",
-                              "Kalimantan Barat" = "KB",
-                              "Kalimantan Tengah" = "KT",
-                              "Kalimantan Selatan" = "KS",
-                              "Kalimantan Timur" = "KI",
-                              "Kalimantan Utara" = "KU",
-                              "Sulawesi Utara" = "SA",
-                              "Gorontalo" = "GO",
-                              "Sulawesi Tengah" = "ST",
-                              "Sulawesi Selatan" = "SN",
-                              "Sulawesi Barat" = "SR",
-                              "Sulawesi Tenggara" = "SG",
-                              "Maluku Utara" = "MU",
-                              "Maluku" = "MA",
-                              "Papua" = "PA",
-                              "Papua Barat" = "PB"
-                              )
-                  )
-      ),
-    mainPanel(
-      plotOutput("Map"),
-      dataTableOutput("tabel")
-    )
-  ) 
+#-----------------SIDEBAR------------------------------
+sidebar <- dashboardSidebar(
+  sidebarMenu(
+    
+    menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
+    
+    selectInput(
+      inputId = "data",
+      label = "Pilih Data Set:",
+      choices = c("Data Jumlah Penduduk"= "jumlah",
+                  "Data Kepadatan Penduduk"= "kepadatan",
+                  "Data Persentase Kemiskinan" = "kemiskinan",
+                  "Data Tingkat Pengangguran"= "pengangguran"),
+      selected = "jumlah"),
+    
+    selectInput(
+      inputId = "provinsi",
+      label = "Pilih Provinsi:",
+      choices = c("Aceh" = "AC",
+                  "Sumatra Utara"= "SU",
+                  "Sumatra Barat" = "SB",
+                  "Riau" = "RI",
+                  "Kepulauan Riau"= "KR",
+                  "Jambi" = "JA",
+                  "Sumatra Selatan" = "SS",
+                  "Bengkulu" = "BE",
+                  "Lampung" = "LA",
+                  "Bangka Belitung" = "BB",
+                  "Jakarta"= "JK",
+                  "Jawa Barat" = "JB",
+                  "Banten" = "BT",
+                  "Jawa Tengah" = "JT",
+                  "Yogyakarta" = "YO",
+                  "Jawa Timur" = "JI",
+                  "Bali" = "BA",
+                  "Nusa Tenggara Barat" = "NB",
+                  "Nusa Tenggara Timur" = "NT",
+                  "Kalimantan Barat" = "KB",
+                  "Kalimantan Tengah" = "KT",
+                  "Kalimantan Selatan" = "KS",
+                  "Kalimantan Timur" = "KI",
+                  "Kalimantan Utara" = "KU",
+                  "Sulawesi Utara" = "SA",
+                  "Gorontalo" = "GO",
+                  "Sulawesi Tengah" = "ST",
+                  "Sulawesi Selatan" = "SN",
+                  "Sulawesi Barat" = "SR",
+                  "Sulawesi Tenggara" = "SG",
+                  "Maluku Utara" = "MU",
+                  "Maluku" = "MA",
+                  "Papua" = "PA",
+                  "Papua Barat" = "PB"))
+
+  )
 )
+
+
+
+#-----------------------TABEL---------------------------
+tabel <- dataTableOutput("tabel")
+
+#-----------------------DOWNLOAD BUTTON-----------------
+download <- downloadButton("downloadData", "Download")
+
+#----------------------BODY-----------------------------
+body <- dashboardBody(tabel,download)
+
+#----------------------FINAL UI---------------------------
+ui <- dashboardPage(title = 'Economic Dashboard', header, sidebar, body, skin='purple')
+
+
+
+
+#----------------------Server--------------------------
 
 server <- function(input,output){
   data <- reactive({
@@ -87,7 +106,7 @@ server <- function(input,output){
   })
   x <- reactive({
     req(data())
-    if(input$data == "Pengangguran"){
+    if(input$data == "pengangguran"){
       a <- data()
       colnames(a) <- c("Provinsi", "Tingkat Pengangguran")
       return(a)
@@ -102,21 +121,35 @@ server <- function(input,output){
       colnames(c) <- c("Provinsi", "Kepadatan Penduduk")
       return(c)
     } 
-      else if(input$data == "presentase"){
+    else if(input$data == "kemiskinan"){
       d <- data()
-      colnames(d) <- d("Provinsi", "Presentase") 
+      colnames(d) <- c("Provinsi", "Presentase") 
       return(d)
     }
     
   })
-    
-    
+
+  set.seed(122)
+  histdata <- rnorm(500)
+  
+  output$plot1 <- renderPlot({
+    data <- histdata[seq_len(input$slider)]
+    hist(data)
+  })
+  
   output$tabel <- renderDataTable(
-    x(), options = list(pageLength = 10)
+    data(), options = list(pageLength = 10)
   )
   
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      paste(input$data, ".csv", sep = "")
+    },
+    content = function(file) {
+      write.csv(data(), file, row.names = FALSE)
+    }
+  )
   
-   
 }
 
 shinyApp(ui, server)
