@@ -85,9 +85,29 @@ server <- function(input,output){
       return(df4)
     }
   })
-  
+  x <- reactive({
+    req(data())
+    if(input$data == "Pengangguran"){
+      a <- data()
+      colnames(a) <- c("Provinsi", "Tingkat P")
+      return(a)
+  }
+    else if(input$data == "jumlah"){
+      b <- data()
+      colnames(b) <- c("Provinsi", "kepadatan p")
+      return(b)
+    }
+    else if(input$data == "kepadatan"){
+      c <- data()
+      colnames(c) <- c("Provinsi", "kepadatan p")
+      
+    } 
+    
+  })
+    
+    
   output$tabel <- renderDataTable(
-    data(), options = list(pageLength = 10)
+    x(), options = list(pageLength = 10)
   )
   
   
